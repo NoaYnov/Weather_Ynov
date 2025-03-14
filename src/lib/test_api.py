@@ -14,3 +14,4 @@ def main():
     datasets["t2m"].sel(lon=x, lat=y, method="nearest").assign_coords(
         {dim: coords}
     ).plot.line(x="time")
+    
