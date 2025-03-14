@@ -1,0 +1,3 @@
+meteofetch
+xarray
+matplotlib
