@@ -1,3 +1,8 @@
 meteofetch
 xarray
 matplotlib
+pandas
+seaborn
+numpy
+plotly
+scikit-learn
