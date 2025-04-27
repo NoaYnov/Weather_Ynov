@@ -1,7 +1,9 @@
-import lib.test_api as test_api
+import lib.api_station as api_station
+import lib.api_temperature as api_temperature
 
 def main():
-    test_api.main()
+    # api_station.main()
+    api_temperature.main()
     
     
     
