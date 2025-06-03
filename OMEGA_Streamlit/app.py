@@ -26,9 +26,11 @@ col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature"], 
 col_hum = "relative_humidity_2m"
 col_press = "surface_pressure"
 
-# --- Affichage humidité et pression ---
 st.subheader("Dernières valeurs d'humidité et pression")
 last_row = df.iloc[-1]
+st.write("Available columns in last_row:", last_row.index.tolist())
+st.write("Value of col_hum:", col_hum)
+# --- Affichage humidité et pression ---
 st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
 st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 
