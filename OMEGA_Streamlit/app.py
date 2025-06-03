@@ -28,8 +28,8 @@ col_press = "surface_pressure"
 
 st.subheader("Dernières valeurs d'humidité et pression")
 last_row = df.iloc[-1]
-st.write("Available columns in last_row:", last_row.index.tolist())
-st.write("Value of col_hum:", col_hum)
+# st.write("Available columns in last_row:", last_row.index.tolist())
+# st.write("Value of col_hum:", col_hum)
 # --- Affichage humidité et pression ---
 st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
 st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
