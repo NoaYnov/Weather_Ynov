@@ -23,14 +23,14 @@ st.dataframe(df.tail(10))
 
 # --- Sélection de la colonne à prédire ---
 col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature"], key="col_temp")
-col_hum = "humidite"
-col_press = "pression"
+col_hum = "relative_humidity_2m"
+col_press = "surface_pressure"
 
 # --- Affichage humidité et pression ---
 st.subheader("Dernières valeurs d'humidité et pression")
 last_row = df.iloc[-1]
 st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
-st.metric("Pression (hPa)", f"{last_row[col_press]:.1f}")
+st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 
 # --- Prévisions SARIMA ---
 def sarima_forecast(series, steps, order=(1,1,1), seasonal_order=(0,1,1,24)):

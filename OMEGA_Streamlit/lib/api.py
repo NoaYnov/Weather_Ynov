@@ -17,7 +17,7 @@ params = {
 	"longitude": 5.4228,
 	"start_date": "2010-01-01",
 	"end_date": "2025-06-01",
-	"hourly": ["temperature_2m", "pressure_msl", "surface_pressure", "wind_speed_100m", "wind_speed_10m", "wind_direction_10m", "wind_direction_100m", "apparent_temperature", "cloud_cover", "rain", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high", "snowfall", "precipitation"],
+	"hourly": ["temperature_2m", "pressure_msl", "surface_pressure", "wind_speed_100m", "wind_speed_10m", "wind_direction_10m", "wind_direction_100m", "apparent_temperature", "cloud_cover", "rain", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high", "snowfall", "precipitation", "relative_humidity_2m"],
 	"timezone": "auto"
 }
 responses = openmeteo.weather_api(url, params=params)
@@ -46,6 +46,7 @@ hourly_cloud_cover_mid = hourly.Variables(11).ValuesAsNumpy()
 hourly_cloud_cover_high = hourly.Variables(12).ValuesAsNumpy()
 hourly_snowfall = hourly.Variables(13).ValuesAsNumpy()
 hourly_precipitation = hourly.Variables(14).ValuesAsNumpy()
+hourly_relative_humidity_2m = hourly.Variables(15).ValuesAsNumpy()
 
 hourly_data = {"date": pd.date_range(
 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
@@ -69,6 +70,7 @@ hourly_data["cloud_cover_mid"] = hourly_cloud_cover_mid
 hourly_data["cloud_cover_high"] = hourly_cloud_cover_high
 hourly_data["snowfall"] = hourly_snowfall
 hourly_data["precipitation"] = hourly_precipitation
+hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 hourly_dataframe.to_csv("../csv/meteo_aix.csv", index = False)
