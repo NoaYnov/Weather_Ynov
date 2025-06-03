@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from datetime import timedelta
 
+
 # --- Chargement des données ---
 st.title("Prévisions météo Aix-en-Provence")
 
