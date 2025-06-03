@@ -11,8 +11,8 @@ st.title("Prévisions météo Aix-en-Provence")
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["datetime"])
-    df = df.sort_values("datetime")
+    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["date"])
+    df = df.sort_values("date")
     return df
 
 df = load_data()
@@ -44,7 +44,7 @@ def sarima_forecast(series, steps, order=(1,1,1), seasonal_order=(0,1,1,24)):
 
 # --- Prévision 24h ---
 st.subheader("Prévision température sur 24h")
-serie_temp = df.set_index("datetime")[col_temp]
+serie_temp = df.set_index("date")[col_temp]
 steps_24h = 24  # Supposé: 1h fréquence
 pred_24h, conf_24h = sarima_forecast(serie_temp, steps=steps_24h)
 
@@ -75,4 +75,4 @@ plt.ylabel("Température (°C)")
 st.pyplot(plt.gcf())
 plt.close()
 
-st.info("Modèle SARIMA simple : les paramètres peuvent être ajustés pour de meilleures prévisions.\nAssurez-vous que les colonnes du CSV sont bien : datetime, temperature, humidite, pression.")
+st.info("Modèle SARIMA simple : les paramètres peuvent être ajustés pour de meilleures prévisions.\nAssurez-vous que les colonnes du CSV sont bien : date, temperature, humidite, pression.")
