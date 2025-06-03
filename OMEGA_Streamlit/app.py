@@ -22,7 +22,7 @@ st.subheader("Données météo récentes")
 st.dataframe(df.tail(10))
 
 # --- Sélection de la colonne à prédire ---
-col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature"], key="col_temp")
+col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature_2m"], key="col_temp")
 col_hum = "relative_humidity_2m"
 col_press = "surface_pressure"
 
