@@ -11,7 +11,7 @@ st.title("Prévisions météo Aix-en-Provence")
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["date"])
+    df = pd.read_csv("OMEGA_Streamlit/csv/meteo_aix.csv", parse_dates=["date"])
     df = df.sort_values("date")
     return df
 
