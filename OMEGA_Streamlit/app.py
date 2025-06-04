@@ -4,13 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
 
-# --- Titre ---
 st.title("Prévisions météo Aix-en-Provence")
 
 # --- Chargement des données météo ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv("OMEGA_Streamlit/csv/meteo_aix.csv", parse_dates=["date"])
+    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["date"])
     df = df.sort_values("date")
     return df
 
@@ -25,13 +24,12 @@ col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature_2m"
 col_hum = "relative_humidity_2m"
 col_press = "surface_pressure"
 
-# --- Affichage des dernières valeurs ---
 st.subheader("Dernières valeurs d'humidité et pression")
 last_row = df.iloc[-1]
 st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
 st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 
-# --- Chargement des prévisions pré-calculées ---
+# --- Chargement des prévisions SARIMA pré-calculées ---
 @st.cache_data
 def load_forecast_data():
     pred = pd.read_csv("OMEGA_Streamlit/csv/pred_24h.csv", index_col=0, parse_dates=True).squeeze()
@@ -41,14 +39,14 @@ def load_forecast_data():
 st.subheader("Prévision température sur 24h")
 serie_temp = df.set_index("date")[col_temp]
 
-# --- Chargement des prévisions SARIMA ---
+# --- Prédictions ---
 pred_24h, conf_24h = load_forecast_data()
 
-# --- Génération des dates futures ---
-last_date = serie_temp.index[-1]
+# --- Déduire les dates futures à partir de la dernière date réelle ---
+last_date = serie_temp.index.max()
 future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(24)]
 
-# --- Affichage du graphique ---
+# --- Graphique ---
 def plot_forecast(history, future_dates, forecast, confidence):
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(history[-48:], label="Historique (48h)")
@@ -63,9 +61,7 @@ def plot_forecast(history, future_dates, forecast, confidence):
 
 plot_forecast(serie_temp, future_dates_24h, pred_24h, conf_24h)
 
-# --- Info utilisateur ---
 st.info(
-    "Les prévisions SARIMA sont pré-calculées pour accélérer l'affichage.\n"
-    "Un script externe met à jour ces fichiers tous les jours.\n\n"
-    "Colonnes attendues dans le CSV : `date`, `temperature_2m`, `relative_humidity_2m`, `surface_pressure`."
+    "Prévisions SARIMA sur 24h à partir de la dernière heure connue.\n"
+    "Les fichiers `pred_24h.csv` et `conf_24h.csv` sont régénérés chaque jour automatiquement."
 )
