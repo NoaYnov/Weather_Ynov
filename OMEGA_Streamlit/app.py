@@ -44,7 +44,7 @@ pred_24h, conf_24h = load_forecast_data()
 
 # --- Déduire les dates futures à partir de la dernière date réelle ---
 last_date = serie_temp.index.max()
-future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(0)]
+future_dates_24h = [last_date-1 + timedelta(hours=i + 1) for i in range(24)]
 
 # --- Graphique ---
 def plot_forecast(history, future_dates, forecast, confidence):
