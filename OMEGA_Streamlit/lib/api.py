@@ -21,7 +21,7 @@ def setup():
 		"latitude": 43.5213,
 		"longitude": 5.4228,
 		"start_date": "2010-01-01",
-		"end_date": "end_date",
+		"end_date": end_date,
 		"hourly": ["temperature_2m", "pressure_msl", "surface_pressure", "wind_speed_100m", "wind_speed_10m", "wind_direction_10m", "wind_direction_100m", "apparent_temperature", "cloud_cover", "rain", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high", "snowfall", "precipitation", "relative_humidity_2m"],
 		"timezone": "auto"
 	}
