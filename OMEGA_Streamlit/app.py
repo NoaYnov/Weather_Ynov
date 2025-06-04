@@ -9,7 +9,7 @@ st.title("Prévisions météo Aix-en-Provence")
 # --- Chargement des données météo ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["date"])
+    df = pd.read_csv("OMEGA_Streamlit/csv/meteo_aix.csv", parse_dates=["date"])
     df = df.sort_values("date")
     return df
 
@@ -32,8 +32,8 @@ st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 # --- Chargement des prévisions SARIMA pré-calculées ---
 @st.cache_data
 def load_forecast_data():
-    pred = pd.read_csv("csv/pred_24h.csv", index_col=0, parse_dates=True).squeeze()
-    conf = pd.read_csv("csv/conf_24h.csv", index_col=0, parse_dates=True)
+    pred = pd.read_csv("OMEGA_Streamlit/csv/pred_24h.csv", index_col=0, parse_dates=True).squeeze()
+    conf = pd.read_csv("OMEGA_Streamlit/csv/conf_24h.csv", index_col=0, parse_dates=True)
     return pred, conf
 
 st.subheader("Prévision température sur 24h")
