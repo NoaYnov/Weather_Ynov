@@ -49,7 +49,7 @@ future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(24)]
 # --- Graphique ---
 def plot_forecast(history, future_dates, forecast, confidence):
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(history[-48:], label="Historique (48h)")
+    ax.plot(history[-72:], label="Historique (48h)")
     ax.plot(future_dates, forecast, label="Prévision 24h", color="red")
     ax.fill_between(future_dates, confidence.iloc[:, 0], confidence.iloc[:, 1],
                     color="pink", alpha=0.3)
