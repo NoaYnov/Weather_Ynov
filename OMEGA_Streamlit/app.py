@@ -2,13 +2,12 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 from datetime import timedelta
 
-
-# --- Chargement des données ---
+# --- Titre ---
 st.title("Prévisions météo Aix-en-Provence")
 
+# --- Chargement des données météo ---
 @st.cache_data
 def load_data():
     df = pd.read_csv("OMEGA_Streamlit/csv/meteo_aix.csv", parse_dates=["date"])
@@ -26,26 +25,30 @@ col_temp = st.selectbox("Choisissez la colonne à prédire :", ["temperature_2m"
 col_hum = "relative_humidity_2m"
 col_press = "surface_pressure"
 
+# --- Affichage des dernières valeurs ---
 st.subheader("Dernières valeurs d'humidité et pression")
 last_row = df.iloc[-1]
-# st.write("Available columns in last_row:", last_row.index.tolist())
-# st.write("Value of col_hum:", col_hum)
-# --- Affichage humidité et pression ---
 st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
 st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 
-# --- Prévisions SARIMA ---
-@st.cache_data(show_spinner="Calcul des prévisions SARIMA...")
-def sarima_forecast_cached(series, steps, order=(1,1,1), seasonal_order=(0,1,1,24)):
-    model = SARIMAX(series, order=order, seasonal_order=seasonal_order,
-                    enforce_stationarity=False, enforce_invertibility=False)
-    results = model.fit(disp=False)
-    forecast = results.get_forecast(steps=steps)
-    pred = forecast.predicted_mean
-    conf_int = forecast.conf_int()
-    return pred, conf_int
+# --- Chargement des prévisions pré-calculées ---
+@st.cache_data
+def load_forecast_data():
+    pred = pd.read_csv("OMEGA_Streamlit/csv/pred_24h.csv", index_col=0, parse_dates=True).squeeze()
+    conf = pd.read_csv("OMEGA_Streamlit/csv/conf_24h.csv", index_col=0, parse_dates=True)
+    return pred, conf
 
-# --- Fonction de tracé du graphique ---
+st.subheader("Prévision température sur 24h")
+serie_temp = df.set_index("date")[col_temp]
+
+# --- Chargement des prévisions SARIMA ---
+pred_24h, conf_24h = load_forecast_data()
+
+# --- Génération des dates futures ---
+last_date = serie_temp.index[-1]
+future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(24)]
+
+# --- Affichage du graphique ---
 def plot_forecast(history, future_dates, forecast, confidence):
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(history[-48:], label="Historique (48h)")
@@ -58,36 +61,11 @@ def plot_forecast(history, future_dates, forecast, confidence):
     st.pyplot(fig)
     plt.close(fig)
 
-# --- Bloc principal : Prévision 24h ---
-st.subheader("Prévision température sur 24h")
-
-serie_temp = df.set_index("date")[col_temp]
-steps_24h = 24
-
-# Prédiction SARIMA avec cache
-pred_24h, conf_24h = sarima_forecast_cached(serie_temp, steps=steps_24h)
-
-# Génération des dates futures
-last_date = serie_temp.index[-1]
-future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(steps_24h)]
-
-# Affichage du graphique
 plot_forecast(serie_temp, future_dates_24h, pred_24h, conf_24h)
 
-# # --- Prévision 5 jours (5*24h) ---
-# st.subheader("Prévision température sur 5 jours")
-# steps_5d = 5*24
-# pred_5d, conf_5d = sarima_forecast(serie_temp, steps=steps_5d)
-
-# future_dates_5d = [serie_temp.index[-1] + timedelta(hours=i+1) for i in range(steps_5d)]
-# plt.figure(figsize=(10,4))
-# plt.plot(serie_temp[-7*24:], label="Historique (7j)")
-# plt.plot(future_dates_5d, pred_5d, label="Prévision 5 jours", color="red")
-# plt.fill_between(future_dates_5d, conf_5d.iloc[:,0], conf_5d.iloc[:,1], color="pink", alpha=0.3)
-# plt.legend()
-# plt.xlabel("Date")
-# plt.ylabel("Température (°C)")
-# st.pyplot(plt.gcf())
-# plt.close()
-
-st.info("Modèle SARIMA simple : les paramètres peuvent être ajustés pour de meilleures prévisions.\nAssurez-vous que les colonnes du CSV sont bien : date, temperature, humidite, pression.")
+# --- Info utilisateur ---
+st.info(
+    "Les prévisions SARIMA sont pré-calculées pour accélérer l'affichage.\n"
+    "Un script externe met à jour ces fichiers tous les jours.\n\n"
+    "Colonnes attendues dans le CSV : `date`, `temperature_2m`, `relative_humidity_2m`, `surface_pressure`."
+)
