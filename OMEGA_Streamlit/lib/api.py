@@ -21,7 +21,7 @@ def setup():
 		"latitude": 43.5213,
 		"longitude": 5.4228,
 		"start_date": "2010-01-01",
-		"end_date": "2025-06-03",
+		"end_date": "2025-06-04",
 		"hourly": ["temperature_2m", "pressure_msl", "surface_pressure", "wind_speed_100m", "wind_speed_10m", "wind_direction_10m", "wind_direction_100m", "apparent_temperature", "cloud_cover", "rain", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high", "snowfall", "precipitation", "relative_humidity_2m"],
 		"timezone": "auto"
 	}
@@ -78,4 +78,15 @@ def setup():
 	hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 
 	hourly_dataframe = pd.DataFrame(data = hourly_data)
-	hourly_dataframe.to_csv("csv/meteo_aix.csv", index = False)
+		# suppression des lignes avec des valeurs manquantes ou NaN ou vides
+	hourly_dataframe = hourly_dataframe.dropna(how = "any")
+	hourly_dataframe.to_csv("../csv/meteo_aix.csv", index = False)
+
+
+
+
+if __name__ == "__main__":
+	setup()
+	print("✅ Données météo récupérées et sauvegardées dans 'csv/meteo_aix.csv'.")
+	print("Vous pouvez maintenant lancer l'application Streamlit.")
+	print("Utilisez la commande : streamlit run app.py")
