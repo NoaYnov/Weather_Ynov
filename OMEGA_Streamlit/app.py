@@ -11,7 +11,7 @@ st.title("Prévisions météo Aix-en-Provence")
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("OMEGA_Streamlit/csv/meteo_aix.csv", parse_dates=["date"])
+    df = pd.read_csv("csv/meteo_aix.csv", parse_dates=["date"])
     df = df.sort_values("date")
     return df
 
@@ -35,46 +35,59 @@ st.metric("Humidité (%)", f"{last_row[col_hum]:.1f}")
 st.metric("Pression au sol (hPa)", f"{last_row[col_press]:.1f}")
 
 # --- Prévisions SARIMA ---
-def sarima_forecast(series, steps, order=(1,1,1), seasonal_order=(0,1,1,24)):
-    # SARIMA simple, adapte les ordres selon ta série et saisonnalité (ici 24 pour horaire)
-    model = SARIMAX(series, order=order, seasonal_order=seasonal_order, enforce_stationarity=False, enforce_invertibility=False)
+@st.cache_data(show_spinner="Calcul des prévisions SARIMA...")
+def sarima_forecast_cached(series, steps, order=(1,1,1), seasonal_order=(0,1,1,24)):
+    model = SARIMAX(series, order=order, seasonal_order=seasonal_order,
+                    enforce_stationarity=False, enforce_invertibility=False)
     results = model.fit(disp=False)
     forecast = results.get_forecast(steps=steps)
     pred = forecast.predicted_mean
     conf_int = forecast.conf_int()
     return pred, conf_int
 
-# --- Prévision 24h ---
+# --- Fonction de tracé du graphique ---
+def plot_forecast(history, future_dates, forecast, confidence):
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(history[-48:], label="Historique (48h)")
+    ax.plot(future_dates, forecast, label="Prévision 24h", color="red")
+    ax.fill_between(future_dates, confidence.iloc[:, 0], confidence.iloc[:, 1],
+                    color="pink", alpha=0.3)
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Température (°C)")
+    ax.legend()
+    st.pyplot(fig)
+    plt.close(fig)
+
+# --- Bloc principal : Prévision 24h ---
 st.subheader("Prévision température sur 24h")
+
 serie_temp = df.set_index("date")[col_temp]
-steps_24h = 24  # Supposé: 1h fréquence
-pred_24h, conf_24h = sarima_forecast(serie_temp, steps=steps_24h)
+steps_24h = 24
 
-future_dates_24h = [serie_temp.index[-1] + timedelta(hours=i+1) for i in range(steps_24h)]
-plt.figure(figsize=(10,4))
-plt.plot(serie_temp[-48:], label="Historique (48h)")
-plt.plot(future_dates_24h, pred_24h, label="Prévision 24h", color="red")
-plt.fill_between(future_dates_24h, conf_24h.iloc[:,0], conf_24h.iloc[:,1], color="pink", alpha=0.3)
-plt.legend()
-plt.xlabel("Date")
-plt.ylabel("Température (°C)")
-st.pyplot(plt.gcf())
-plt.close()
+# Prédiction SARIMA avec cache
+pred_24h, conf_24h = sarima_forecast_cached(serie_temp, steps=steps_24h)
 
-# --- Prévision 5 jours (5*24h) ---
-st.subheader("Prévision température sur 5 jours")
-steps_5d = 5*24
-pred_5d, conf_5d = sarima_forecast(serie_temp, steps=steps_5d)
+# Génération des dates futures
+last_date = serie_temp.index[-1]
+future_dates_24h = [last_date + timedelta(hours=i + 1) for i in range(steps_24h)]
 
-future_dates_5d = [serie_temp.index[-1] + timedelta(hours=i+1) for i in range(steps_5d)]
-plt.figure(figsize=(10,4))
-plt.plot(serie_temp[-7*24:], label="Historique (7j)")
-plt.plot(future_dates_5d, pred_5d, label="Prévision 5 jours", color="red")
-plt.fill_between(future_dates_5d, conf_5d.iloc[:,0], conf_5d.iloc[:,1], color="pink", alpha=0.3)
-plt.legend()
-plt.xlabel("Date")
-plt.ylabel("Température (°C)")
-st.pyplot(plt.gcf())
-plt.close()
+# Affichage du graphique
+plot_forecast(serie_temp, future_dates_24h, pred_24h, conf_24h)
+
+# # --- Prévision 5 jours (5*24h) ---
+# st.subheader("Prévision température sur 5 jours")
+# steps_5d = 5*24
+# pred_5d, conf_5d = sarima_forecast(serie_temp, steps=steps_5d)
+
+# future_dates_5d = [serie_temp.index[-1] + timedelta(hours=i+1) for i in range(steps_5d)]
+# plt.figure(figsize=(10,4))
+# plt.plot(serie_temp[-7*24:], label="Historique (7j)")
+# plt.plot(future_dates_5d, pred_5d, label="Prévision 5 jours", color="red")
+# plt.fill_between(future_dates_5d, conf_5d.iloc[:,0], conf_5d.iloc[:,1], color="pink", alpha=0.3)
+# plt.legend()
+# plt.xlabel("Date")
+# plt.ylabel("Température (°C)")
+# st.pyplot(plt.gcf())
+# plt.close()
 
 st.info("Modèle SARIMA simple : les paramètres peuvent être ajustés pour de meilleures prévisions.\nAssurez-vous que les colonnes du CSV sont bien : date, temperature, humidite, pression.")
