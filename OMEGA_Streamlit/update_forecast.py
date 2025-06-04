@@ -59,10 +59,7 @@ def main():
     pred_24h, conf_24h = generate_forecast(serie_truncated, steps=24)
     save_forecast(pred_24h, conf_24h, "24h", output_dir)
 
-    # --- Prévision sur 1 mois ---
-    print("🔮 Génération des prévisions sur 1 mois (720h)...")
-    pred_month, conf_month = generate_forecast(serie_truncated, steps=720)
-    save_forecast(pred_month, conf_month, "1mois", output_dir)
+
 
     print("🎉 Prévisions mises à jour avec succès.")
 
