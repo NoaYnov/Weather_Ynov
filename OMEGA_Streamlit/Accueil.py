@@ -5,7 +5,7 @@ st.set_page_config(page_title="WeatherForYnov", layout="centered")
 
 # Titre principal
 st.title("WeatherForYnov - Prévision Météorologique")
-
+st.image("img/aix.jpg")
 # Introduction
 st.markdown("""
 **WeatherForYnov** est un projet fictif développé pour analyser des données climatiques historiques et fournir des prévisions météorologiques précises à l’aide de techniques de machine learning.
@@ -45,8 +45,7 @@ st.subheader("Technologies")
 st.markdown("""
 - Python : Pandas, NumPy, Matplotlib, Seaborn
 - Modélisation : SARIMA (via statsmodels)
-- Visualisation : Plotly, Dash (ou Streamlit pour l’interface)
-- Interface utilisateur : Streamlit
+- Visualisation : Streamlit
 """)
 
 # Footer ou note
