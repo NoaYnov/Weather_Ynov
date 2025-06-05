@@ -57,3 +57,15 @@ st.info(
     "Les prévisions sont générées à l'aide d'un modèle SARIMA entraîné sur les dernières données disponibles.\n"
     "Les fichiers `pred_24h.csv` et `conf_24h.csv` contiennent respectivement la température prévue et l’intervalle de confiance à 95%."
 )
+
+
+# MAE (Erreur Absolue Moyenne): 4.185174862417118
+# RMSE (Racine de l'Erreur Quadratique Moyenne): 4.65397594233298
+
+MAE = 4.185174862417118
+RMSE = 4.65397594233298
+st.sidebar.subheader("Performances du modèle")
+st.sidebar.metric("MAE ", f"{MAE}")
+st.sidebar.metric("RMSE ", f"{RMSE}")
+
+

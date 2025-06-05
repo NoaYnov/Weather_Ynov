@@ -4,7 +4,6 @@ import pandas as pd
 # Titre de la page
 st.title("Présentation des données climatiques")
 
-
 # Chargement du CSV
 @st.cache_data
 def load_data():
@@ -58,3 +57,21 @@ st.markdown("""
 - **Période couverte :** {} à {}
 - **Source :** Open-Meteo
 """.format(df['date'].min(), df['date'].max()))
+
+# Matrice de corrélation
+st.subheader("Matrice de corrélation")
+
+# On ne garde que les variables numériques pour la corrélation
+num_df = df.select_dtypes(include='number')
+corr_matrix = num_df.corr()
+
+st.dataframe(corr_matrix)
+
+# Optionnel : Affichage graphique de la matrice de corrélation
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+st.write("Visualisation graphique de la matrice de corrélation :")
+fig, ax = plt.subplots(figsize=(10, 8))
+sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".2f", ax=ax)
+st.pyplot(fig)
