@@ -7,3 +7,5 @@ numpy
 plotly
 scikit-learn
 statsmodels
+itertools
+streamlit

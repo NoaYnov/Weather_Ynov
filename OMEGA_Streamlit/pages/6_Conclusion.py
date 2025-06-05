@@ -19,11 +19,10 @@ Le modèle **SARIMA** a permis de générer des **prévisions fiables** de la te
 - Modèle entraîné sur les températures des dernières semaines.
 - Horizon de prévision : **24 heures**.
 - Visualisation des données récentes et des prévisions avec incertitude.
-- Précision satisfaisante pour un usage de court terme (±1 à 2°C).
+- Précision satisfaisante pour un usage de court terme.
 
 Les courbes obtenues montrent que le modèle :
 - **Suit bien la tendance de la température** sur 24h.
-- Capte les variations de **cycle journalier**.
 - Fournit une **estimation prudente** des écarts possibles (via l’intervalle de confiance).
 
 ---
@@ -34,7 +33,6 @@ Malgré les bons résultats, certaines limites subsistent :
 
 - **Modèle univarié** : seule la température est prédite. D'autres variables (vent, pression, humidité) ne sont pas encore intégrées.
 - **Pas de gestion d'événements rares** : les épisodes extrêmes (canicules, vents violents, orages) sont peu prédits.
-- **Mise à jour du modèle manuelle** : un automatisme quotidien serait préférable.
 
 ---
 
@@ -49,6 +47,6 @@ Malgré les bons résultats, certaines limites subsistent :
 
 ## Conclusion
 
-Le modèle SARIMA constitue une **base robuste** pour la prévision météo à court terme sur des données structurées. Il est particulièrement adapté pour des usages pédagogiques, exploratoires ou pour un prototype d'application météo localisée.
+Le modèle SARIMA constitue une **base robuste** pour la prévision météo à court terme sur des données structurées.
 
 """)
