@@ -77,3 +77,18 @@ with tab1:
 # === Onglet Prophet ===
 with tab2:
     plot_forecast(prophet_df, "Prophet", "green")
+    st.markdown("""
+    📊 Métriques de fiabilité globales sur nos données
+    
+        🌡️ Température :
+        MAE : 2.38
+        RMSE : 3.01
+        
+        🌧️ Précipitations :
+        MAE : 0.14
+        RMSE : 0.49
+        
+        💨 Vitesse du vent :
+        MAE : 6.39
+        RMSE : 7.90
+    """)
