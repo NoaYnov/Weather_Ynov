@@ -7,3 +7,4 @@ matplotlib
 statsmodels
 streamlit
 prophet
+darts
