@@ -3,7 +3,7 @@ import pandas as pd
 
 # Titre de la page
 st.title("Présentation des données climatiques")
-st.image("img/aix.jpg")
+
 
 # Chargement du CSV
 @st.cache_data
